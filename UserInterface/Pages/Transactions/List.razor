@@ -1,0 +1,58 @@
+﻿@page "/transactions"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject ITransactionController TransactionController
+
+<h1>
+    Transactions 
+    <a href="/transactions/creditCardAccountTransactions/create" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create Credit Card Account Transaction +</a>
+    <a href="/transactions/generalAccountTransactions/create" 
+           class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create General Account Transaction +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Exchange Rate</th>
+        <th>Account</th>
+        <th>Category</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (TransactionDto transaction in transactions)
+        {
+                        <tr>
+                            <td>@transaction.Id</td>
+                            <td>@transaction.Title</td>
+                            <td>@transaction.CreationDate</td>
+                            <td>$ @transaction.Amount</td>
+                            <td>@transaction?.ExchangeRateAssociated?.Id</td>
+                            <td>@transaction?.AccountAssociated?.Id</td>
+                            <td>@transaction?.CategoryAssociated?.Id</td>
+                            <td>
+                                 <a class="btn btn-primary btn-sm" href="/transactions/@transaction.Id/edit">Edit</a>
+                            </td>
+                        </tr>
+        }
+    </tbody>
+</table>
+
+
+@code {
+    private List<TransactionDto>? transactions;
+
+    protected override void OnInitialized()
+    {
+        transactions = TransactionController.GetTransactions(UserSession.LoggedUser.Id); 
+    }
+}
+

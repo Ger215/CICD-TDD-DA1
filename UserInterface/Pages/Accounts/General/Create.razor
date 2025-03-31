@@ -1,0 +1,103 @@
+﻿@page "/accounts/generalAccounts/create"
+
+<h1>Create General Account</h1>
+
+@using Models.Enums
+@using Logic.Interfaces
+@using UserInterface.Data;
+@using Logic.DTOs
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IGeneralAccountController GeneralAccountController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Name</label>
+        <input type="text" class="form-control" id="title" @bind="name" />
+    </div>
+    <div class="form-group">
+        <label for="title">Initial Amount</label>
+        <input type="number" class="form-control" id="amount" @bind="initialAmount" />
+    </div>
+    <div class="form-group">
+        <label for="title">Currency</label>
+        <select class="form-control" @bind="accountCurrency">
+            <option value="@Currency.UruguayanPeso">UYU</option>
+            <option value="@Currency.Dollar">USD</option>
+            <option value="@Currency.Euro">EUR</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="title">Creation Date</label>
+        <input type="date" class="form-control" id="date" @bind="creationDate" />
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/accounts/generalAccounts">Cancel</a>
+    </div>
+</form>
+
+@if (showAccountErrorModal)
+{
+                    <AuthenticationModal 
+                                Title="General Account Error" 
+                                Text="@errorMessage" 
+                                DialogType=AuthenticationModal.ModalDialogType.Ok
+                                OnClose="@CloseAccountErrorModal">
+                    </AuthenticationModal>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private GeneralAccountDto? element;
+    string errorMessage;
+    string name;
+    double initialAmount;
+    Currency accountCurrency;
+    DateTime creationDate = DateTime.Now;
+    bool showAccountErrorModal = false;
+
+
+    protected override void OnInitialized()
+    {
+        element = new GeneralAccountDto();
+    }
+
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showAccountErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            element = UpdateGeneralAccountDto();
+            GeneralAccountController.CreateGeneralAccount(element, UserSession.LoggedUser.Id);
+            GeneralAccountController.AddGeneralAccount(element, UserSession.LoggedUser.Id); 
+            NavigationManager.NavigateTo("/accounts/generalAccounts");
+        }
+        catch (Exception ex)
+        {
+            showAccountErrorModal = true;
+            errorMessage = ex.Message;
+        }
+        
+    }
+    
+    private GeneralAccountDto UpdateGeneralAccountDto()
+    {
+        element.Name = name;
+        element.InitialAmmount = initialAmount;
+        element.AccountCurrency = accountCurrency;
+        element.CreationDate = creationDate;
+
+        return element;
+    }
+}

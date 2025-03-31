@@ -1,0 +1,62 @@
+﻿@page "/reports/categorySpendingReport"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IReportByCategory ReportByCategory
+
+
+<h1>
+    Category Spending Report
+</h1>
+
+<div class="form-group">
+    <input type="date" class="form-control" id="date" @bind="month" />
+    <button type="button" class="btn btn-primary" @onclick="FilterExpensesByMonth">Filter By Month</button>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Category Name</th>
+        <th>Amount Spent</th>
+        <th>% Of Total Spent</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var reportGoalByCategory in reportGoalsByCategory)
+        {
+                        <tr>
+                            <td>@reportGoalByCategory.CategoryAssociated.Name</td>
+                            <td>$ @reportGoalByCategory.TotalSpent</td>
+                            <td>% @reportGoalByCategory.PercentageSpent</td>
+                        </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="/reports" 
+       class="btn btn-success btn-sm" style="margin-right: 40px; margin-top: 10px;">Go Back
+    </a>
+</div>
+
+@code {
+    private List<ReportGoalByCategoryDto>? reportGoalsByCategory;
+    private DateTime month = DateTime.Today;
+    
+    protected override void OnInitialized()
+    {
+        DateTime date = DateTime.Today;
+        reportGoalsByCategory = ReportByCategory.GenerateReportByCategories(UserSession.LoggedUser.Id, date);
+    }
+
+    private void FilterExpensesByMonth()
+    {
+        reportGoalsByCategory = ReportByCategory.GenerateReportByCategories(UserSession.LoggedUser.Id, month);
+    }
+}
+

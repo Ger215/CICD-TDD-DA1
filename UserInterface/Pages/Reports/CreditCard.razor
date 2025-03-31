@@ -1,0 +1,108 @@
+﻿@page "/reports/creditCardReport" 
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject ICreditCardAccountController CreditCardAccountController
+@inject IReportCreditCardExpenses ReportCreditCardExpenses
+
+
+<h1>
+    Credit Card Expenses Report
+</h1>
+
+<div class="form-group">
+    <label for="CreditCardAccount">CreditCard Account</label>
+    <select class="form-control" @onchange="OnChangeCreditCardAccount">
+        <option disable selected value="">Select Credit Card</option>
+        @foreach (var creditCardAccount in creditCardAccounts)
+        {
+            <option value="@creditCardAccount.Id">
+                @creditCardAccount.IssuingBank - @creditCardAccount.LastFourDigits
+            </option>
+        }
+    </select>
+</div>
+
+<div>
+        <br/>
+        <button type="button" class="btn btn-primary" @onclick="FilterCreditCardAccountExpenses">Filter By Credit Card</button>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Credit Card Account</th>
+        <th>Expenses</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var reportCreditCardAccount in creditCardReports)
+        {
+                        <tr>
+                            <td>@reportCreditCardAccount.CreditCardAccount.IssuingBank - @reportCreditCardAccount.CreditCardAccount.LastFourDigits</td>
+                            <td>$ @reportCreditCardAccount.TotalSpent</td>
+                        </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="/reports" 
+       class="btn btn-success btn-sm" style="margin-right: 40px; margin-top: 10px;">Go Back
+    </a>
+</div>
+
+@if (showReportErrorModal)
+{
+                    <AuthenticationModal 
+                                Title="Report Error" 
+                                Text="@errorMessage" 
+                                DialogType=AuthenticationModal.ModalDialogType.Ok
+                                OnClose="@CloseAccountErrorModal">
+                    </AuthenticationModal>
+}
+
+@code {
+    private List<CreditCardAccountDto>? creditCardAccounts;
+    private List<ReportCreditCardExpensesDto> creditCardReports;
+    private CreditCardAccountDto creditCardAccountDto;
+    bool showReportErrorModal = false;
+    string errorMessage;
+
+    protected override void OnInitialized()
+    {
+        DateTime date = DateTime.Today;
+        creditCardAccounts = CreditCardAccountController.GetCreditCardAccounts(UserSession.LoggedUser.Id);
+        creditCardReports = new List<ReportCreditCardExpensesDto>();
+    }
+    
+    private void OnChangeCreditCardAccount(ChangeEventArgs e)
+    {
+        int creditCardAccountId = int.Parse(e.Value.ToString());
+        creditCardAccountDto = CreditCardAccountController.GetCreditCardAccountById(creditCardAccountId);
+    }
+    
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showReportErrorModal = false;
+        StateHasChanged();
+    }
+    
+    private void FilterCreditCardAccountExpenses()
+    {
+        try
+        {
+            DateTime date = DateTime.Today;
+            creditCardReports = ReportCreditCardExpenses.GenerateReportCreditCardExpenses(creditCardAccountDto, UserSession.LoggedUser.Id, date);
+        }
+        catch
+        (Exception ex)
+        {
+            showReportErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+}

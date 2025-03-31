@@ -1,0 +1,119 @@
+﻿@page "/transactions/{id:int}/edit"
+
+<h1>Edit Transaction</h1>
+
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ITransactionController TransactionController
+@inject ICategoryController CategoryController
+@inject IExchangeRateController ExchangeRateController
+
+<form>
+
+    <div class="form-group">
+                <label for="ExchangeRate">Exchange Rate</label>
+                <select class="form-control" @onchange="OnChangeExchangeRate" >
+                    <option disable selected value="">Select Exchange Rate</option>
+                    @foreach (var exchangeRate in exchangeRates)
+                    {
+                            <option value="@exchangeRate.Id">
+                               @exchangeRate.Id
+                            </option>
+                    }
+                </select>
+    </div>
+    <div class="form-group">
+        <label for="title">Amount</label>
+        <input type="Number" class="form-control" id="amount" @bind="transaction.Amount" />
+    </div>
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <select class="form-control" @onchange="OnChangeCategory" >
+            <option disable selected value="">Select Category</option>
+            @foreach (var category in categories)
+            {
+                            <option value="@category.Id">
+                                @category.Name
+                            </option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/transactions">Cancel</a>
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private List<CategoryDto> categories;
+    private CategoryDto? categoryDto;
+    private ExchangeRateDto? exchangeRateDto;
+    private List<ExchangeRateDto> exchangeRates;
+    private int exchangeRateId;
+    private TransactionDto? element;
+    private TransactionDto? transaction;
+
+    protected override void OnInitialized()
+    {
+        categories = CategoryController.GetAllCategories(UserSession.LoggedUser.Id);
+        categoryDto = new CategoryDto();
+        exchangeRates = ExchangeRateController.GetExchangeRates(UserSession.LoggedUser.Id);
+        exchangeRateDto = new ExchangeRateDto();
+        transaction = TransactionController.GetTransactionById(Id);
+        element = new TransactionDto();
+    }
+
+    public void OnChangeCategory(ChangeEventArgs e)
+    {
+        int categoryId = int.Parse(e.Value.ToString());
+        categoryDto = CategoryController.GetCategoryById(categoryId);
+        UpdateTransactionCategory();
+
+        TransactionController.UpdateTransactionCategory(element, categoryDto);
+
+        TransactionController.UpdateTransaction(element);
+    }
+    
+    public void OnChangeExchangeRate(ChangeEventArgs e)
+    {
+        int exchangeRateId = int.Parse(e.Value.ToString());
+        exchangeRateDto = ExchangeRateController.GetExchangeRateById(exchangeRateId);
+        UpdateTransactionRate();
+
+        TransactionController.UpdateTransactionExchange(element, exchangeRateDto);
+        TransactionController.UpdateTransaction(element);
+
+    }
+
+    private void SaveChanges()
+    {
+        UpdateTransactionCategory();
+        UpdateTransactionRate();
+        TransactionController.UpdateTransaction(element);
+        NavigationManager.NavigateTo("/transactions");
+    }
+    
+    private void UpdateTransactionCategory()
+    {
+        element.Id = transaction.Id;
+        element.Amount = transaction.Amount;
+        element.CategoryAssociated = transaction.CategoryAssociated;
+    }
+    
+    private void UpdateTransactionRate()
+    {
+        element.Id = transaction.Id;
+        element.Amount = transaction.Amount;
+        element.ExchangeRateAssociated = transaction.ExchangeRateAssociated;
+
+    }
+
+}
+

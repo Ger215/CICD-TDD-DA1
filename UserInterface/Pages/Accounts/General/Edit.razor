@@ -1,0 +1,79 @@
+﻿@page "/accounts/generalAccounts/{id:int}/edit"
+
+<h1>Edit General Account</h1>
+
+@using Logic.DTOs
+@using Logic.Interfaces
+@using UserInterface.Data;
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IGeneralAccountController GeneralAccountController
+
+<form>
+    <div class="form-group">
+        <label for="title">Name</label>
+        <input type="text" class="form-control" id="name" @bind="generalAccount.Name" />
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/accounts/generalAccounts">Cancel</a>
+    </div>
+</form>
+
+@if (showAccountErrorModal)
+{
+                <AuthenticationModal 
+                            Title="Account Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseAccountErrorModal">
+                </AuthenticationModal>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private List<GeneralAccountDto>? generalAccounts;
+    private GeneralAccountDto? element;
+    private GeneralAccountDto? generalAccount;
+    private bool showAccountErrorModal = false;
+    private string errorMessage;
+
+    protected override void OnInitialized()
+    {
+        generalAccounts = GeneralAccountController.GetGeneralAccounts(UserSession.LoggedUser.Id);
+        generalAccount = GeneralAccountController.GetGeneralAccountById(Id);
+        element = new GeneralAccountDto();
+    }
+
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showAccountErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            UpdateGeneralAccountDto();
+            GeneralAccountController.UpdateGeneralAccount(element, UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/accounts/generalAccounts");
+        }
+        catch(Exception ex)
+        {
+            showAccountErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+    
+    private void UpdateGeneralAccountDto()
+    {
+        element.Id = generalAccount.Id;
+        element.Name = generalAccount.Name;
+    }
+}
+

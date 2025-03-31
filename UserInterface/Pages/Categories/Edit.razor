@@ -1,0 +1,88 @@
+﻿@page "/categories/{id:int}/edit"
+
+<h1>Edit Category</h1>
+
+@using Models.Enums
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ICategoryController CategoryController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Name</label>
+        <input type="text" class="form-control" id="name" @bind="category.Name" />
+    </div>
+    <div class="form-group">
+        <label for="title">Status</label>
+        <select class="form-control" @bind="category.Status">
+            <option value="@StatusType.Active">Active</option>
+            <option value="@StatusType.Inactive">Inactive</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/categories">Cancel</a>
+    </div>
+</form>
+
+@if (showCategoryErrorModal)
+{
+                <AuthenticationModal 
+                            Title="Category Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseCategoryErrorModal">
+                </AuthenticationModal>
+}
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+    private bool showCategoryErrorModal = false;
+    private string errorMessage;
+    private CategoryDto? element;
+    private CategoryDto? category;
+    string name;
+    StatusType status;
+
+    protected override void OnInitialized()
+    {
+        category = CategoryController.GetCategoryById(Id);
+        element = new CategoryDto();
+    }
+    
+    private void CloseCategoryErrorModal(bool accepted)
+    {
+        showCategoryErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            UpdateCategoryDto();
+            CategoryController.UpdateCategory(element,UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/categories");
+        }
+        catch (Exception ex)
+        {
+            showCategoryErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+    
+    private void UpdateCategoryDto()
+    {
+        element.Id = category.Id;
+        element.Name = category.Name;
+        element.Status = category.Status;
+    }
+}

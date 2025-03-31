@@ -1,0 +1,199 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = UserInterface
+build_property.RootNamespace = UserInterface
+build_property.ProjectDir = /Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface
+build_property._RazorSourceGeneratorDebug = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/CreditCard/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvQ3JlZGl0Q2FyZC9DcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/CreditCard/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvQ3JlZGl0Q2FyZC9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/CreditCard/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvQ3JlZGl0Q2FyZC9MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/General/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvR2VuZXJhbC9DcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/General/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvR2VuZXJhbC9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/General/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvR2VuZXJhbC9MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Accounts/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWNjb3VudHMvTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Categories/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2F0ZWdvcmllcy9DcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Categories/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2F0ZWdvcmllcy9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Categories/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2F0ZWdvcmllcy9MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/ExchangeRates/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXhjaGFuZ2VSYXRlcy9DcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/ExchangeRates/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXhjaGFuZ2VSYXRlcy9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/ExchangeRates/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXhjaGFuZ2VSYXRlcy9MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Objectives/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvT2JqZWN0aXZlcy9DcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Objectives/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvT2JqZWN0aXZlcy9FZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Objectives/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvT2JqZWN0aXZlcy9MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/AccountBalance.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9BY2NvdW50QmFsYW5jZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/CategorySpending.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9DYXRlZ29yeVNwZW5kaW5nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/CreditCard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9DcmVkaXRDYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/ExpenseObjectives.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9FeHBlbnNlT2JqZWN0aXZlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/IncomeOutcome.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9JbmNvbWVPdXRjb21lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Reports/ListExpenses.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVwb3J0cy9MaXN0RXhwZW5zZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/SignUp.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2lnblVwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Transactions/CreditCardAccountTransactions/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVHJhbnNhY3Rpb25zL0NyZWRpdENhcmRBY2NvdW50VHJhbnNhY3Rpb25zL0NyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Transactions/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVHJhbnNhY3Rpb25zL0VkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Transactions/GeneralAccountTransactions/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVHJhbnNhY3Rpb25zL0dlbmVyYWxBY2NvdW50VHJhbnNhY3Rpb25zL0NyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Transactions/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVHJhbnNhY3Rpb25zL0xpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/UserSettings/EditAddress.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlclNldHRpbmdzL0VkaXRBZGRyZXNzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/UserSettings/EditName.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlclNldHRpbmdzL0VkaXROYW1lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/UserSettings/EditPassword.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlclNldHRpbmdzL0VkaXRQYXNzd29yZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/UserSettings/EditSurname.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlclNldHRpbmdzL0VkaXRTdXJuYW1lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/UserSettings/UserSettings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVXNlclNldHRpbmdzL1VzZXJTZXR0aW5ncy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Shared/AuthenticationLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0F1dGhlbnRpY2F0aW9uTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Shared/AuthenticationModal.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0F1dGhlbnRpY2F0aW9uTW9kYWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-zy27kmi0r4
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-ap080x34dk
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ger_2002/Desktop/Universidad/Semestre V/DA1/ObligatorioParte1/276763_269702/Obligatorio1_DA1/UserInterface/Pages/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0xheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

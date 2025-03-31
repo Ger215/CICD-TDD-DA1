@@ -1,0 +1,101 @@
+﻿@page "/categories/create"
+
+<h1>Create Category</h1>
+
+@using Logic.DTOs;
+@using Logic.Interfaces;
+@using Models.Enums
+@using UserInterface.Data;
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ICategoryController Controller
+
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Name</label>
+        <input type="text" class="form-control" id="title" @bind="name" />
+    </div>
+    <div class="form-group">
+        <label for="title">Creation Date</label>
+        <input type="date" class="form-control" id="date" @bind="creationDate" />
+    </div>
+    <div class="form-group">
+        <label for="title">Status</label>
+        <select class="form-control" @bind="status">
+            <option value="@StatusType.Active">Active</option>
+            <option value="@StatusType.Inactive">Inactive</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="title">Type</label>
+        <select class="form-control" @bind="typeOf">
+            <option value="@CategoryType.IncomeCategory">Income Category</option>
+            <option value="@CategoryType.ExpensesCategory">Expenses Category</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/categories">Cancel</a>
+    </div>
+</form>
+
+@if (showCategoryErrorModal)
+{
+                <AuthenticationModal 
+                            Title="Category Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseCategoryErrorModal">
+                </AuthenticationModal>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private bool showCategoryErrorModal = false;
+    private string errorMessage;
+    string name = "";
+    DateTime creationDate = DateTime.Today;
+    StatusType status = StatusType.Active;
+    CategoryType typeOf = CategoryType.IncomeCategory;
+    CategoryDto element;
+
+    protected override void OnInitialized()
+    {
+        element = new CategoryDto();
+    }
+
+    private void CloseCategoryErrorModal(bool accepted)
+    {
+        showCategoryErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            UpdateCategoryDto();
+            Controller.AddCategory(element, UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/categories");
+        }
+        catch(Exception ex)
+        {
+            showCategoryErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void UpdateCategoryDto()
+    {
+        element.Name = name;
+        element.CreationDate = creationDate;
+        element.Status = status;
+        element.TypeOf = typeOf;
+    }
+}

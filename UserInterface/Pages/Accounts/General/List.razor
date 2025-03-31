@@ -1,0 +1,87 @@
+﻿@page "/accounts/generalAccounts"
+
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IGeneralAccountController GeneralAccountController
+
+<h1>
+    General Accounts 
+    <a href="/accounts/generalAccounts/create" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Initial Ammount</th>
+        <th>Currency</th>
+        <th>Creation Date</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var generalAccount in generalAccountList)
+        {
+                <tr>
+                    <td>@generalAccount.Id</td>
+                    <td>@generalAccount.Name</td>
+                    <td>@generalAccount.InitialAmmount</td>
+                    <td>@generalAccount.AccountCurrency</td>
+                    <td>@generalAccount.CreationDate</td>
+                    <td>
+                            <a class="btn btn-primary btn-sm" href="/accounts/generalAccounts/@generalAccount.Id/edit">Edit</a>
+                        <button class="btn btn-danger btn-sm" @onclick="(() => DeleteElement(generalAccount.Id))">Delete</button>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a href="/accounts">Go Back</a>
+</div>
+
+@if (showAccountErrorModal)
+{
+                <AuthenticationModal 
+                            Title="GeneralAccount Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseAccountErrorModal">
+                </AuthenticationModal>
+}
+
+@code {
+    private List<GeneralAccountDto>? generalAccountList;
+    private bool showAccountErrorModal = false;
+    private string errorMessage;
+
+    protected override void OnInitialized()
+    {
+        generalAccountList = GeneralAccountController.GetGeneralAccounts(UserSession.LoggedUser.Id);
+    }
+    
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showAccountErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void DeleteElement(int id)
+    {
+        try
+        {
+            GeneralAccountController.DeleteGeneralAccount(id, UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/accounts/generalAccounts", true);
+        }
+        catch(Exception ex)
+        {
+            showAccountErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    } 
+}

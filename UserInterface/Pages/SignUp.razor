@@ -1,0 +1,120 @@
+﻿@layout AuthenticationLayout
+@page "/signup"
+
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject NavigationManager NavigationManager
+@inject IUserAuthentication UserController
+
+<div class="authentication-page">
+    <div class="form">
+        <form class="authentication-form">
+            <div class="authentication-logo">
+                <img src="Logo.PNG" alt="FinTrac Logo" />
+            </div>
+            <input type="email" placeholder="Email" @bind="email" required/>
+            <input type="text" placeholder="Name" @bind="name" required />
+            <input type="text" placeholder="Surname" @bind="surname" required/>
+            <input type="text" placeholder="Address" @bind="addressDirection"/>
+            <input type="password" placeholder="Password" @bind="password" required/>
+            <input type="password" placeholder="Confirm Password" @bind="passwordConfirmation" required/>
+            <button type="button" @onclick="CreateUser">Sign up</button>
+            <p class="message">Already Registered? <a style="cursor:pointer" @onclick="GoToLogin">Login</a></p>
+        </form>
+    </div>
+</div>
+
+@if (showDifferentPasswordsModal)
+{
+                <AuthenticationModal 
+                    Title="SignUp Error" 
+                    Text="Passwords are not the same, try again" 
+                    DialogType=AuthenticationModal.ModalDialogType.Ok
+                    OnClose="@OnAuthenticationDialogClose">
+                </AuthenticationModal>
+}
+
+@if (showUserErrorModal)
+{
+            <AuthenticationModal 
+                        Title="SignUp Error" 
+                        Text="@errorMessage" 
+                        DialogType=AuthenticationModal.ModalDialogType.Ok
+                        OnClose="@CloseUserErrorModal">
+            </AuthenticationModal>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    
+    private string passwordConfirmation;
+    private bool showDifferentPasswordsModal = false;
+    private bool showUserErrorModal = false;
+    private string errorMessage;
+    string email;
+    string name;
+    string surname;
+    string addressDirection = "";
+    string password;
+    UserDto element;
+
+    protected override void OnInitialized()
+    {
+        element = new UserDto();
+    }
+
+    private void OnAuthenticationDialogClose(bool accepted)
+    {
+        showDifferentPasswordsModal = false;
+        StateHasChanged();
+    }
+
+    private void CloseUserErrorModal(bool accepted)
+    {
+        showUserErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void CreateUser()
+    {
+        try
+        {
+            element = UpdateUserDto();
+            UserController.CreateUser(element);
+            
+            if (string.Equals(password, passwordConfirmation))
+            {
+                UserController.AddUser(element);
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                showDifferentPasswordsModal = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            showUserErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+
+
+    private UserDto UpdateUserDto()
+    {
+        element.Email = email;
+        element.Name = name;
+        element.Surname = surname;
+        element.Address = addressDirection;
+        element.Password = password;
+
+        return element;
+    }
+
+    private void GoToLogin()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

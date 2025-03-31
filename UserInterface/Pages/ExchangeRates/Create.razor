@@ -1,0 +1,64 @@
+﻿@page "/exchangeRates/create" 
+
+<h1>Create Exchange Rate</h1>
+
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+@using Models.Enums
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IExchangeRateController ExchangeRateController
+
+<form>
+    <div class="form-group">
+            <label for="title">Currency</label>
+            <select class="form-control" @bind="element.RateCurrency">
+                <option value="@ForeignCurrency.Dollar">USD</option>
+                <option value="@ForeignCurrency.Euro">EUR</option>
+            </select>
+        </div>
+    <div class="form-group">
+        <label for="title">Date</label>
+        <input type="date" class="form-control" id="date" @bind="element.Date"/>
+    </div>
+    <div class="form-group">
+        <label for="title">Rate</label>
+        <input type=number step=0.01 class="form-control" id="rate" @bind="element.Value"/>
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/exchangeRates">Cancel</a>
+    </div>
+</form>
+
+
+@code {
+    private ExchangeRateDto? element;
+    private List<ExchangeRateDto>? exchangeRates;
+
+    protected override void OnInitialized()
+    {
+        exchangeRates = ExchangeRateController.GetExchangeRates(UserSession.LoggedUser.Id);
+        DateTime defaultDate = DateTime.Today;
+        double defaultValue = 0.00;
+        element = new ExchangeRateDto(){ Date = defaultDate, Value = defaultValue};
+    }
+
+    private void SaveChanges()
+    {
+        ExchangeRateController.CreateExchangeRate(element,UserSession.LoggedUser.Id);
+        ExchangeRateController.AddExchangeRate(element,UserSession.LoggedUser.Id);
+        GoToExchangeRates();
+    }
+
+    public void GoToExchangeRates()
+    {
+        NavigationManager.NavigateTo("/exchangeRates");
+    }
+}
+
+
+

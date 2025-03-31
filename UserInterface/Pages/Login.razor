@@ -1,0 +1,110 @@
+﻿@layout AuthenticationLayout
+@page "/"
+
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IUserAuthentication UserController
+
+
+<div class="authentication-page">
+    <div class="form">
+        <form class="authentication-form" @onsubmit="LoginUser">
+            <div class="authentication-logo">
+                <img src="Logo.PNG" alt="FinTrac Logo" />
+            </div>
+            <input type="text" placeholder="Email" @bind="email" />
+            <input type="password" placeholder="Password" @bind="password" />
+            <button type="submit">Login</button>
+            <p class="message">Not registered? <a style="cursor:pointer" @onclick="GoToSignUp">Create an account</a></p>
+        </form>
+    </div>
+</div>
+
+@if (showUserErrorModal)
+{
+            <AuthenticationModal 
+                        Title="Login Error" 
+                        Text="@errorMessage" 
+                        DialogType=AuthenticationModal.ModalDialogType.Ok
+                        OnClose="@CloseUserErrorModal">
+            </AuthenticationModal>
+}
+
+
+@if (!loginSuccesful && showModal)
+{
+        <AuthenticationModal 
+            Title="Login Error" 
+            Text="Wrong Credentials or User doesn't exist" 
+            DialogType=AuthenticationModal.ModalDialogType.Ok
+            OnClose="@OnAuthenticationDialogClose">
+        </AuthenticationModal>
+}
+
+@code {
+    private bool loginSuccesful;
+    private bool showModal = false;
+    private string email;
+    private string password;
+    private bool showUserErrorModal = false;
+    private string errorMessage;
+    UserDto element;
+
+
+    protected override void OnInitialized()
+    {
+        element = new UserDto();
+    }
+
+    private void OnAuthenticationDialogClose(bool accepted)
+    {
+        showModal = false;
+        StateHasChanged();
+    }
+    
+    private void CloseUserErrorModal(bool accepted)
+    {
+        showUserErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void LoginUser()
+    {
+        try
+        {
+            bool loginSuccesful = UserController.CheckUserLogin(email, password);
+
+            if (loginSuccesful)
+            {
+                var loggedUser = UserController.FindUserByEmail(email);
+                UserSession.LoggedUser = loggedUser;
+
+                if (loggedUser != null)
+                {
+                    NavigationManager.NavigateTo("/index");
+                }
+            }
+            else
+            {
+                showModal = true;
+                loginSuccesful = false;
+            }
+        }
+        catch
+        (Exception ex)
+        {
+            showUserErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+
+    private void GoToSignUp()
+    {
+        NavigationManager.NavigateTo("/signup");
+    }
+}

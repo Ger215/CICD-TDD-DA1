@@ -1,0 +1,107 @@
+﻿@page "/reports/accountBalanceReport" 
+
+@using Logic.DTOs;
+@using Logic.Interfaces
+@using UserInterface.Data;
+
+@inject UserSession UserSession
+@inject IGeneralAccountController GeneralAccountController
+@inject IReportGeneralAccountBalance ReportGeneralAccountBalance
+
+
+<h1>
+    General Account Balance Report
+</h1>
+
+<div class="form-group">
+    <label for="GeneralAccount">General Account</label>
+    <select class="form-control" @onchange="OnChangeGeneralAccount">
+        <option disable selected value="">Select General Account</option>
+        @foreach (var generalAccount in generalAccounts)
+        {
+            <option value="@generalAccount.Id">
+                @generalAccount.Name
+            </option>
+        }
+    </select>
+</div>
+
+<div>
+        <br/>
+        <button type="button" class="btn btn-primary" @onclick="FilterGeneralAccountBalance">Filter By General Account</button>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>General Account</th>
+        <th>Balance</th>
+        <th>Currency</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var reportGeneralAccount in generalAccountReports)
+        {
+                        <tr>
+                            <td>@reportGeneralAccount.GeneralAccountName</td>
+                            <td>$ @reportGeneralAccount.Balance</td>
+                            <td>@reportGeneralAccount.AccountCurrency</td>
+                        </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="/reports" 
+       class="btn btn-success btn-sm" style="margin-right: 40px; margin-top: 10px;">Go Back
+    </a>
+</div>
+
+@if (showReportErrorModal)
+{
+                    <AuthenticationModal 
+                                Title="Report Error" 
+                                Text="@errorMessage" 
+                                DialogType=AuthenticationModal.ModalDialogType.Ok
+                                OnClose="@CloseAccountErrorModal">
+                    </AuthenticationModal>
+}
+
+@code {
+    private List<GeneralAccountDto>? generalAccounts;
+    private List<ReportGeneralAccountBalanceDto> generalAccountReports;
+    private GeneralAccountDto generalAccountDto;
+    bool showReportErrorModal = false;
+    string errorMessage;
+
+    protected override void OnInitialized()
+    {
+        generalAccounts = GeneralAccountController.GetGeneralAccounts(UserSession.LoggedUser.Id);
+        generalAccountReports = new List<ReportGeneralAccountBalanceDto>();
+    }
+    
+    private void OnChangeGeneralAccount(ChangeEventArgs e)
+    {
+        int generalAccountId = int.Parse(e.Value.ToString());
+        generalAccountDto = GeneralAccountController.GetGeneralAccountById(generalAccountId);
+    }
+    
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showReportErrorModal = false;
+        StateHasChanged();
+    }
+    
+    private void FilterGeneralAccountBalance()
+    {
+        try
+        {
+            generalAccountReports = ReportGeneralAccountBalance.GenerateReportGeneralAccountBalance(generalAccountDto,UserSession.LoggedUser.Id);
+        }
+        catch (Exception ex)
+        {
+            showReportErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+}

@@ -1,0 +1,84 @@
+﻿@page "/categories"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ICategoryController CategoryController
+
+<h1>
+    Categories 
+    <a href="/categories/create" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Creation Date</th>
+        <th>Status</th>
+        <th>Type</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in categoriesList)
+        {
+            <tr>
+                <td>@category.Id</td>
+                <td>@category.Name</td>
+                <td>@category.CreationDate</td>
+                <td>@category.Status</td>
+                <td>@category.TypeOf</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="/categories/@category.Id/edit">Edit</a>
+                    <button class="btn btn-danger btn-sm" @onclick="(() => DeleteElement(category,category.Id))">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (showCategoryErrorModal)
+{
+                <AuthenticationModal 
+                            Title="Category Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseCategoryErrorModal">
+                </AuthenticationModal>
+}
+
+@code {
+    private List<CategoryDto>? categoriesList;
+    private bool showCategoryErrorModal = false;
+    private string errorMessage;
+
+    protected override void OnInitialized()
+    {
+        categoriesList = CategoryController.GetAllCategories(UserSession.LoggedUser.Id);
+    }
+
+    private void CloseCategoryErrorModal(bool accepted)
+    {
+        showCategoryErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void DeleteElement(CategoryDto category, int id)
+    {
+        try
+        {
+            CategoryController.DeleteCategory(category, UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/categories", true);
+        }
+        catch(Exception ex)
+        {
+            showCategoryErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }    
+}

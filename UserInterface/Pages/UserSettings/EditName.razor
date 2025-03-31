@@ -1,0 +1,129 @@
+﻿@page "/userSettings/editName"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IUserModification UserController
+
+<form>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Name" @bind="name"/>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" @onclick="EditNameAndReturn">Save Changes</button>
+    </div>
+</form>
+
+@if (showUserErrorModal)
+{
+                <AuthenticationModal 
+                            Title="User Modification Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseUserErrorModal">
+                </AuthenticationModal>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private UserDto? element;
+    private bool showUserErrorModal = false;
+    private string errorMessage;
+    private string name;
+
+    protected override void OnInitialized()
+    {
+		name = UserSession.LoggedUser.Name;
+        element = new UserDto();
+    }
+
+    private void CloseUserErrorModal(bool accepted)
+    {
+        showUserErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void EditNameAndReturn()
+    {
+        try
+        {
+            element = UpdateUserDtoName();
+            UserController.ChangeUserName(UserSession.LoggedUser, element);
+            
+            GoToUserSettings();
+        }
+        catch (Exception ex)
+        {
+            showUserErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+    
+    private UserDto UpdateUserDtoName()
+    {
+        element.Name = name;
+
+        return element;
+    }
+
+    private void GoToUserSettings()
+    {
+        NavigationManager.NavigateTo("/userSettings");
+    }
+}
+
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        font-size: 16px;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .btn-primary:hover {
+        background-color: #45a049;
+    }
+</style>

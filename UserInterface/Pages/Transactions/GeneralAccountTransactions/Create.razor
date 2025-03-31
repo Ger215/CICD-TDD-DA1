@@ -1,0 +1,158 @@
+﻿@page "/transactions/generalAccountTransactions/create"
+
+<h1>Create General Account Transaction</h1>
+
+@using Models.Enums
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ITransactionController TransactionController
+@inject IGeneralAccountController GeneralAccountController
+@inject ICategoryController CategoryController
+@inject IExchangeRateController ExchangeRateController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" @bind="title"/>
+    </div>
+    <div class="form-group">
+        <label for="title">Date</label>
+        <input type="date" class="form-control" id="date" @bind="element.CreationDate"/>
+    </div>
+    <div class="form-group">
+        <label for="title">Amount</label>
+        <input type="number" class="form-control" id="amount" @bind="element.Amount"/>
+    </div>
+    <div class="form-group">
+            <label for="ExchangeRate">Exchange Rate</label>
+            <select class="form-control" @onchange="OnChangeExchangeRate" >
+                <option disable selected value="">Select Exchange Rate</option>
+                @foreach (var exchangeRate in exchangeRates)
+                {
+                        <option value="@exchangeRate.Id">
+                           @exchangeRate.Id
+                        </option>
+                }
+            </select>
+    </div>
+    <div class="form-group">
+        <label>General Accounts</label>
+        <select class="form-control" @onchange="OnChangeGeneralAccount" >
+            <option disable selected value="">Select GeneralAccount</option>
+            @foreach (GeneralAccountDto generalAccount in generalAccounts)
+            {
+                    <option value="@generalAccount.Id" >
+                       @generalAccount.Name
+                    </option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <select class="form-control" @onchange="OnChangeCategory" >
+            <option disable selected value="">Select Category</option>
+            @foreach (var category in categories)
+            {
+                    <option value="@category.Id">
+                       @category.Name
+                    </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/transactions">Cancel</a>
+    </div>
+</form>
+
+<div>
+    <a href="/transactions" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Go Back</a>
+</div>
+
+@if (showTransactionErrorModal)
+{
+                <AuthenticationModal 
+                            Title="Transaction Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseTransactionErrorModal">
+                </AuthenticationModal>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private TransactionDto? element;
+    private GeneralAccountDto generalAccountDto;
+    private List<GeneralAccountDto> generalAccounts;
+    private ExchangeRateDto exchangeRateDto;
+    private List<ExchangeRateDto> exchangeRates;
+    private List<CategoryDto> categories;
+    private bool showTransactionErrorModal = false;
+    private string errorMessage;
+    private CategoryDto category;
+    private string title;
+
+    protected override void OnInitialized()
+    {
+        generalAccounts = GeneralAccountController.GetGeneralAccounts(UserSession.LoggedUser.Id);
+        categories = CategoryController.GetAllCategories(UserSession.LoggedUser.Id);
+        exchangeRates = ExchangeRateController.GetExchangeRates(UserSession.LoggedUser.Id);
+        category = new CategoryDto();
+        element = new TransactionDto() { CreationDate = DateTime.Today };
+        generalAccountDto = new GeneralAccountDto();
+        exchangeRateDto = new ExchangeRateDto();
+    }
+
+    public void OnChangeGeneralAccount(ChangeEventArgs e)
+    {
+        int generalAccountId = int.Parse(e.Value.ToString());
+        generalAccountDto = GeneralAccountController.GetGeneralAccountById(generalAccountId);
+        element.AccountAssociated = GeneralAccountController.CreateGeneralAccount(generalAccountDto,UserSession.LoggedUser.Id);
+    }
+
+    public void OnChangeCategory(ChangeEventArgs e)
+    {
+        int categoryId = int.Parse(e.Value.ToString());
+        category = CategoryController.GetCategoryById(categoryId);
+        element.CategoryAssociated = CategoryController.CreateCategory(category,UserSession.LoggedUser.Id);
+    }
+    
+    public void OnChangeExchangeRate(ChangeEventArgs e)
+    {
+        int exchangeRateId = int.Parse(e.Value.ToString());
+        exchangeRateDto = ExchangeRateController.GetExchangeRateById(exchangeRateId);
+        element.ExchangeRateAssociated = ExchangeRateController.CreateExchangeRate(exchangeRateDto, UserSession.LoggedUser.Id);
+    }
+
+    private void CloseTransactionErrorModal(bool accepted)
+    {
+        showTransactionErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            element.Title = title;
+            TransactionController.CreateTransaction(element);
+            TransactionController.AddTransaction(element,UserSession.LoggedUser.Id,element.AccountAssociated.Id,element.CategoryAssociated.Id,element.ExchangeRateAssociated.Id);
+            NavigationManager.NavigateTo("/transactions");
+        }
+        catch (Exception ex)
+        {
+            showTransactionErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+}
+

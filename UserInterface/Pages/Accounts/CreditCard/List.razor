@@ -1,0 +1,93 @@
+﻿@page "/accounts/creditCardAccounts"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ICreditCardAccountController CreditCardAccountController
+
+<h1>
+    Credit Card Accounts 
+    <a href="/accounts/creditCardAccounts/create" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Issuing Bank</th>
+        <th>Last Four Digits</th>
+        <th>Currency</th>
+        <th>Available Balance</th>
+        <th>Creation Date</th>
+        <th>Closing Date</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var creditCardAccount in creditCardAccounts)
+        {
+                    <tr>
+                        <td>@creditCardAccount.Id</td>
+                        <td>@creditCardAccount.IssuingBank</td>
+                        <td>@creditCardAccount.LastFourDigits</td>
+                        <td>@creditCardAccount.AccountCurrency</td>
+                        <td>@creditCardAccount.AvailableBalance</td>
+                        <td>@creditCardAccount.CreationDate</td>
+                        <td>@creditCardAccount.ClosingDate</td>
+                        <td>
+                                    <a class="btn btn-primary btn-sm" href="/accounts/creditCardAccounts/@creditCardAccount.Id/edit">Edit</a>
+                                <button class="btn btn-danger btn-sm" @onclick="(() => DeleteElement(creditCardAccount,creditCardAccount.Id))">Delete</button>
+                        </td>
+                    </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a href="/accounts">Go Back</a>
+</div>
+
+@if (showAccountErrorModal)
+{
+    <AuthenticationModal Title="CreditCard Account Error"
+                         Text="@errorMessage"
+                         DialogType=AuthenticationModal.ModalDialogType.Ok
+                         OnClose="@CloseAccountErrorModal">
+    </AuthenticationModal>
+}
+
+
+@code {
+    private List<CreditCardAccountDto>? creditCardAccounts;
+    private bool showAccountErrorModal = false;
+    private string errorMessage;
+
+    protected override void OnInitialized()
+    {
+        creditCardAccounts = CreditCardAccountController.GetCreditCardAccounts(UserSession.LoggedUser.Id);
+    }
+    
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showAccountErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void DeleteElement(CreditCardAccountDto creditCardAccount,int id)
+    {
+        try
+        {
+            CreditCardAccountController.DeleteCreditCardAccount(id,UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/accounts/creditCardAccounts", true);
+        }
+        catch(Exception ex)
+        {
+            showAccountErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    } 
+}
+
+

@@ -1,0 +1,83 @@
+﻿@page "/expenseObjectives/{id:int}/edit"
+
+<h1>Edit Expense Objective</h1>
+
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ISpendingGoalController SpendingGoalController
+@inject ICategoryController CategoryController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Max Amount</label>
+        <input type="number" class="form-control" id="maximumammount" @bind="element.MaxAmount" />
+    </div>
+    <div class="form-group">
+        <label for="category">Select Categories</label>
+        <select multiple class="form-control" id="categories" @onchange="OnChangeCategories" >
+            @foreach (var category in categoriesList)
+            {
+                    <option value="@category.Id" >
+                    @category.Name
+                    </option>
+            }
+        </select>
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+    <a href="/expenseObjectives">Cancel</a>
+</form>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<CategoryDto>? categoriesList;
+    private SpendingGoalDto? element;
+    private SpendingGoalDto spendingGoal;
+
+    protected override void OnInitialized()
+    {
+        categoriesList = CategoryController.GetAllCategories(UserSession.LoggedUser.Id);
+        spendingGoal = SpendingGoalController.GetSpendingGoalById(Id);
+        element = new SpendingGoalDto();
+        element.Id = spendingGoal.Id;
+    }
+
+    public void OnChangeCategories(ChangeEventArgs e)
+    {
+        var categoriesIdsString = (string[])e.Value;
+        var categories = new List<CategoryDto>();
+        foreach (var stringId in categoriesIdsString)
+        {
+            var categoryDto = CategoryController.GetCategoryById(int.Parse(stringId));
+            var category = CategoryController.CreateCategory(categoryDto, UserSession.LoggedUser.Id);
+            if (!element.Categories.Contains(category))
+            {
+                element.Categories.Add(category);
+            }
+            
+        }
+    }
+
+    private void SaveChanges()
+    {
+        UpdateSpendingGoalDto(element, spendingGoal);
+        SpendingGoalController.UpdateSpendingGoal(spendingGoal, UserSession.LoggedUser.Id);
+        NavigationManager.NavigateTo("/expenseObjectives");
+    }
+    
+    private void UpdateSpendingGoalDto(SpendingGoalDto element, SpendingGoalDto spendingGoal)
+    {
+        spendingGoal.Id = element.Id;
+        spendingGoal.MaxAmount = element.MaxAmount;
+        spendingGoal.Categories = element.Categories;
+    }
+}
+

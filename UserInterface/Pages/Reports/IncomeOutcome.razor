@@ -1,0 +1,196 @@
+﻿@page "/reports/incomeOutcome"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IReportIncomeOutcome ReportIncomeOutcome
+
+
+<h1>
+    Report Incomes & Outcomes
+</h1>
+
+<div class="form-group">
+    <input type="date" class="form-control" id="date" @bind="month" />
+    <button type="button" class="btn btn-primary" @onclick="GetIncomeOutcome">Filter By Month</button>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Day</th>
+            @foreach (var r in reports)
+            {
+                <th>@r.Day</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Income</td>
+            @foreach (var r in reports)
+            {
+                <td>$@r.Income</td>
+            }
+        </tr>
+        <tr>
+            <td>Outcome</td>
+            @foreach (var r in reports)
+            {
+                <td>$@r.Outcome</td>
+            }
+        </tr>
+    </tbody>
+</table>
+
+<LineChart @ref="lineChart" Width="800" Class="mb-4"/>
+
+<div>
+    <a href="/reports" 
+       class="btn btn-success btn-sm" style="margin-right: 40px; margin-top: 10px;">Go Back
+    </a>
+</div>
+
+
+@code {
+    private List<ReportIncomeOutcomeDto>? reports;
+    private DateTime month = DateTime.Today;
+    
+    private LineChart lineChart = default!;
+    private LineChartOptions lineChartOptions = default!;
+    private ChartData chartData = default!;
+
+    private int datasetsCount;
+    private int labelsCount;
+
+
+    protected override void OnInitialized()
+    {
+        DateTime date = DateTime.Today;
+        reports = new List<ReportIncomeOutcomeDto>();
+        chartData = new ChartData { Labels = GetDefaultDataLabels(), Datasets = GetDefaultDataSets() };
+        lineChartOptions = new() { Responsive = true, Interaction = new Interaction { Mode = InteractionMode.Index } };
+    }
+    
+    private void GetIncomeOutcome()
+    {
+        reports = ReportIncomeOutcome.GetIncomeOutcome(month, UserSession.LoggedUser.Id);
+        
+        chartData.Datasets = GetDefaultDataSets();
+
+        lineChartOptions.Responsive = true;
+        lineChartOptions.Interaction = new Interaction { Mode = InteractionMode.Index };
+
+        lineChart.UpdateAsync(chartData, lineChartOptions);
+    }
+
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await lineChart.InitializeAsync(chartData, lineChartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    #region Data Preparation
+
+    private List<IChartDataset> GetDefaultDataSets()
+    {
+        var datasets = new List<IChartDataset>();
+
+        datasets.Add(GetIncomeLineChartDataset());
+        datasets.Add(GetOutcomeLineChartDataset());
+
+        return datasets;
+    }
+
+
+    private LineChartDataset GetIncomeLineChartDataset()
+    {
+        var c = ColorBuilder.CategoricalTwelveColors[datasetsCount % ColorBuilder.CategoricalTwelveColors.Length].ToColor();
+        datasetsCount += 1;
+
+        string lightGreenColor = $"rgba(0, 224, 37)";
+
+        return new LineChartDataset
+        {
+            Label = $"Income",
+            Data = GetIncomeData(),
+            BackgroundColor = new List<string> { lightGreenColor },
+            BorderColor = new List<string> { lightGreenColor },
+            BorderWidth = new List<double> { 2 },
+            HoverBorderWidth = new List<double> { 4 },
+            PointBackgroundColor = new List<string> { lightGreenColor },
+            PointRadius = new List<int> { 0 },
+            PointHoverRadius = new List<int> { 4 }
+        };
+    }
+    
+    private LineChartDataset GetOutcomeLineChartDataset()
+    {
+        var c = ColorBuilder.CategoricalTwelveColors[datasetsCount % ColorBuilder.CategoricalTwelveColors.Length].ToColor();
+        datasetsCount += 1;
+        
+        string lightRedColor = $"rgba(255, 17, 0)";
+
+        return new LineChartDataset
+        {
+            Label = $"Outcome",
+            Data = GetOutcomeData(),
+            BackgroundColor = new List<string> { lightRedColor },
+            BorderColor = new List<string> { lightRedColor },
+            BorderWidth = new List<double> { 2 },
+            HoverBorderWidth = new List<double> { 4 },
+            PointBackgroundColor = new List<string> { lightRedColor },
+            PointRadius = new List<int> { 0 },
+            PointHoverRadius = new List<int> { 4 }
+        };
+    }
+
+
+    private List<double> GetOutcomeData()
+    {
+        if (reports == null || !reports.Any())
+        {
+            return new List<double>();
+        }
+
+        return reports.Select(r => r.Outcome).ToList();
+    }
+    
+    private List<double> GetIncomeData()
+    {
+        if (reports == null || !reports.Any())
+        {
+            return new List<double>();
+        }
+
+        return reports.Select(r => r.Income).ToList();
+    }
+
+    private List<string> GetDefaultDataLabels()
+    {
+        var labels = new List<string>();
+        for (var index = 1; index <= 31; index++)
+        {
+            labels.Add(index.ToString());
+        }
+
+        return labels;
+    }
+
+    private string GetNextDataLabel()
+    {
+        labelsCount += 1;
+        return $"{labelsCount}";
+    }
+
+    #endregion Data Preparation
+
+}
+

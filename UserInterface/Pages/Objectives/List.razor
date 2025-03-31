@@ -1,0 +1,48 @@
+﻿@page "/expenseObjectives"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject ISpendingGoalController SpendingGoalController
+
+<h1>
+    Expense Objectives 
+    <a href="/expenseObjectives/create" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Max Ammount</th>
+        <th>Currency</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var spendingGoal in spendingGoalList)
+        {
+              <tr>
+                  <td>@spendingGoal.Id</td>
+                  <td>@spendingGoal.Title</td>
+                  <td>@spendingGoal.MaxAmount</td>
+                    <td>@spendingGoal.GoalCurrency</td>
+                  <td>
+                       <a class="btn btn-primary btn-sm" href="/expenseObjectives/@spendingGoal.Id/edit">Edit</a>
+                  </td>
+             </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<SpendingGoalDto>? spendingGoalList;
+
+    protected override void OnInitialized()
+    {
+        spendingGoalList = SpendingGoalController.GetSpendingGoals(UserSession.LoggedUser.Id);
+    }
+}

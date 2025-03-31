@@ -1,0 +1,117 @@
+﻿@page "/expenseObjectives/create" 
+
+<h1>Create Expense Objective</h1>
+
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+@using Models.Enums
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ISpendingGoalController SpendingGoalController
+@inject ICategoryController CategoryController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="title" @bind="title"/>
+    </div>
+    <div class="form-group">
+        <label for="title">Max Amount</label>
+        <input type="number" class="form-control" id="maxamount" @bind="maximumAmount"/>
+    </div>
+    <div class="form-group">
+                <label for="title">Currency</label>
+        <select class="form-control" @bind="objectiveCurrency">
+            <option value="@Currency.UruguayanPeso">UYU</option>
+            <option value="@Currency.Dollar">USD</option>
+            <option value="@Currency.Euro">EUR</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="actor">Select Categories</label>
+        <select multiple class="form-control" id="categories" @onchange="OnChangeCategories" >
+            @foreach (var category in categoriesList)
+            {
+                    <option value="@category.Id">
+                        @category.Name
+                    </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/expenseObjectives">Cancel</a>
+    </div>
+</form>
+
+@if (showSpendingGoalErrorModal)
+{
+                <AuthenticationModal 
+                            Title="Expense Objective Error" 
+                            Text="@errorMessage" 
+                            DialogType=AuthenticationModal.ModalDialogType.Ok
+                            OnClose="@CloseSpendingGoalErrorModal">
+                </AuthenticationModal>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private List<CategoryDto> categoriesList;
+    private SpendingGoalDto? element;
+    private bool showSpendingGoalErrorModal = false;
+    private string errorMessage;
+    private string title;
+    private double maximumAmount;
+    private Currency objectiveCurrency;
+
+    protected override void OnInitialized()
+    {
+        element = new SpendingGoalDto();
+        categoriesList = CategoryController.GetAllCategoriesForSpending(UserSession.LoggedUser.Id);
+    }
+
+    private void CloseSpendingGoalErrorModal(bool accepted)
+    {
+        showSpendingGoalErrorModal = false;
+        StateHasChanged();
+    }
+
+    public void OnChangeCategories(ChangeEventArgs e)
+    {
+        var categoriesIdsString = (string[])e.Value;
+        var categories = new List<CategoryDto>();
+        foreach (var stringId in categoriesIdsString)
+        {
+            var categoryDto = CategoryController.GetCategoryById(int.Parse(stringId));
+            var category = CategoryController.CreateCategory(categoryDto, UserSession.LoggedUser.Id);
+            element.Categories.Add(category);
+        }
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            element.Title = title;
+            element.MaxAmount = maximumAmount;
+            element.GoalCurrency = objectiveCurrency;
+            SpendingGoalController.CreateSpendingGoal(element);
+            SpendingGoalController.AddSpendingGoal(element, UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/expenseObjectives");
+        }
+        catch (Exception ex)
+        {
+            showSpendingGoalErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+}
+
+

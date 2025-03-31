@@ -1,0 +1,161 @@
+﻿@page "/reports/expensesReport"
+
+@using Logic.DTOs;
+@using Logic.Interfaces;
+@using Models;
+@using DataAccess
+@using UserInterface.Data;
+
+@inject UserSession UserSession
+@inject ICategoryController CategoryController
+@inject ITransactionController TransactionController
+@inject IReportExpenses ReportExpenses
+@inject IAccountController AccountController
+
+<h1>
+    Expenses Reports 
+</h1>
+
+<div class="form-group">
+    <label for="Category">Initial Date</label>
+    <input type="date" class="form-control" id="dateInitial" @bind="dateInitial" />
+
+    <label for="Category">Final Date</label>
+    <input type="date" class="form-control" id="dateFinal" @bind="dateFinal" />
+
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <select class="form-control" @onchange="OnChangeCategory">
+            <option disable selected value="">Select Category</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">
+                    @category.Name
+                </option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+            <label for="Account">Account</label>
+            <select class="form-control" @onchange="OnChangeAccount">
+                <option disable selected value="">Select Account</option>
+                @foreach (var account in accounts)
+                {
+                    <option value="@account.Id">
+                        @account.Id
+                    </option>
+                }
+            </select>
+        </div>
+
+    <div>
+        <br/>
+        <button type="button" class="btn btn-primary" @onclick="FilterExpenses">Filter</button>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Exchange Rate</th>
+            <th>Account</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (TransactionDto transaction in transactions)
+        {
+            <tr>
+                <td>@transaction.Id</td>
+                <td>@transaction.Title</td>
+                <td>@transaction.CreationDate</td>
+                <td>$ @transaction.Amount</td>
+                <td>@transaction?.ExchangeRateAssociated?.Id</td>
+                <td>@transaction?.AccountAssociated?.Id</td>
+                <td>@transaction?.CategoryAssociated?.Id</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div>
+    <a href="/reports"
+       class="btn btn-success btn-sm" style="margin-right: 40px; margin-top: 10px;">
+        Go Back
+    </a>
+</div>
+
+@if (showReportErrorModal)
+{
+                    <AuthenticationModal 
+                                Title="Report Error" 
+                                Text="@errorMessage" 
+                                DialogType=AuthenticationModal.ModalDialogType.Ok
+                                OnClose="@CloseAccountErrorModal">
+                    </AuthenticationModal>
+}
+
+
+@code {
+
+    private DateTime dateInitial = DateTime.Today;
+    private DateTime dateFinal = DateTime.Today;
+
+    private List<AccountDto> accounts; 
+    private AccountDto account;
+    private List<CategoryDto> categories;
+    private CategoryDto category;
+    private List<TransactionDto>? transactions;
+    bool showReportErrorModal = false;
+    string errorMessage;
+
+
+
+    protected override void OnInitialized()
+    {
+        DateTime date = DateTime.Now;
+        accounts = AccountController.GetAccounts(UserSession.LoggedUser.Id);
+        categories = CategoryController.GetAllCategories(UserSession.LoggedUser.Id);
+        transactions = new List<TransactionDto>();
+    }
+    
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showReportErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void FilterExpenses()
+    {
+        try
+        {
+            transactions = ReportExpenses.GetTransactionsFiltered(dateInitial, dateFinal, category, account, UserSession.LoggedUser.Id);
+        }
+        catch
+        (Exception ex)
+        {
+            showReportErrorModal = true;
+            errorMessage = ex.Message;
+        } 
+    }
+
+    private void OnChangeCategory(ChangeEventArgs e)
+    {
+        int categoryId = int.Parse(e.Value.ToString());
+        category = CategoryController.GetCategoryById(categoryId);
+    }
+    
+    private void OnChangeAccount(ChangeEventArgs e)
+    {
+        int accountId = int.Parse(e.Value.ToString());
+        account = AccountController.GetAccountById(accountId);
+    }
+    
+}
+
+

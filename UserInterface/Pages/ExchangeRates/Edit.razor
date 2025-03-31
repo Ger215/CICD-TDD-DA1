@@ -1,0 +1,42 @@
+﻿@page "/exchangeRates/{id:int}/edit"
+
+<h1>Edit Exchange Rate</h1>
+
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+
+@inject NavigationManager NavigationManager
+@inject UserSession UserSession
+@inject IExchangeRateController ExchangeRateController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Rate</label>
+        <input type="text" class="form-control" id="rate" @bind="element.Value" />
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/exchangeRates">Cancel</a>
+    </div>
+</form>
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ExchangeRateDto? element;
+
+    protected override void OnInitialized()
+    {
+        element = ExchangeRateController.GetExchangeRateById(Id);
+    }
+
+    private void SaveChanges()
+    {
+        ExchangeRateController.UpdateExchangeRate(element);
+        NavigationManager.NavigateTo("/exchangeRates");
+    }
+}

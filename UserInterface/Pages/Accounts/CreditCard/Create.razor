@@ -1,0 +1,114 @@
+﻿@page "/accounts/creditCardAccounts/create"
+
+<h1>Create Credit Card Account</h1>
+
+@using Models.Enums
+@using UserInterface.Data;
+@using Logic.Interfaces
+@using Logic.DTOs
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject ICreditCardAccountController CreditCardAccountController
+
+<form>
+
+    <div class="form-group">
+        <label for="title">Issuing Bank</label>
+        <input type="text" class="form-control" id="title" @bind="issuingBank" />
+    </div>
+    <div class="form-group">
+        <label for="title">Last Four Digits</label>
+        <input type="text" class="form-control" id="lastfourdigits" @bind="lastFourDigits" />
+    </div>
+    <div class="form-group">
+        <label for="title">Currency</label>
+        <select class="form-control" @bind="accountCurrency">
+            <option value="@Currency.UruguayanPeso">UYU</option>
+            <option value="@Currency.Dollar">USD</option>
+            <option value="@Currency.Euro">EUR</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="title">Available Balance</label>
+        <input type="number" class="form-control" id="availablebalance" @bind="availableBalance" />
+    </div>
+    <div class="form-group">
+        <label for="title">Creation Date</label>
+        <input type="date" class="form-control" id="date" @bind="creationDate" />
+    </div>
+    <div class="form-group">
+        <label for="title">Closing Date</label>
+        <input type="date" class="form-control" id="closingdate" @bind="closingDate" />
+    </div>
+
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save Changes</button>
+        <a href="/accounts/creditCardAccounts">Cancel</a>
+    </div>
+</form>
+
+@if (showAccountErrorModal)
+{
+                        <AuthenticationModal 
+                                    Title="Credit Card Account Error" 
+                                    Text="@errorMessage" 
+                                    DialogType=AuthenticationModal.ModalDialogType.Ok
+                                    OnClose="@CloseAccountErrorModal">
+                        </AuthenticationModal>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private CreditCardAccountDto? element;
+    string errorMessage;
+    string issuingBank;
+    string lastFourDigits;
+    double availableBalance;
+    Currency accountCurrency;
+    DateTime creationDate = DateTime.Now;
+    DateTime closingDate = DateTime.Now;
+    bool showAccountErrorModal = false;
+
+    protected override void OnInitialized()
+    {
+        element = new CreditCardAccountDto();
+    }
+
+    private void CloseAccountErrorModal(bool accepted)
+    {
+        showAccountErrorModal = false;
+        StateHasChanged();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            element = UpdateCreditCardAccountDto();
+            CreditCardAccountController.CreateCreditCardAccount(element);
+            CreditCardAccountController.AddCreditCardAccount(element, UserSession.LoggedUser.Id);
+            NavigationManager.NavigateTo("/accounts/creditCardAccounts");
+        }
+        catch (Exception ex)
+        {
+            showAccountErrorModal = true;
+            errorMessage = ex.Message;
+        }
+    }
+    
+    private CreditCardAccountDto UpdateCreditCardAccountDto()
+    {
+        element.IssuingBank = issuingBank;
+        element.LastFourDigits = lastFourDigits;
+        element.AccountCurrency = accountCurrency;
+        element.AvailableBalance = availableBalance;
+        element.CreationDate = creationDate;
+        element.ClosingDate = closingDate;
+
+        return element;
+    }
+}
+

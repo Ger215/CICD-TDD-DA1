@@ -1,0 +1,57 @@
+﻿@page "/exchangeRates"
+
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject NavigationManager NavigationManager
+@inject IExchangeRateController ExchangeRateController
+
+
+<h1>
+    Exchange Rates 
+    <a href="/exchangeRates/create" 
+       class="btn btn-success btn-sm" style="float: right;margin-right: 40px;">Create +</a>
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Date</th>
+        <th>Rate</th>
+        <th>Currency</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var exchangeRate in exchangeRates)
+        {
+                <tr>
+                    <td>@exchangeRate.Id</td>
+                    <td>@exchangeRate.Date</td>
+                    <td>@exchangeRate.Value</td>
+                    <td>@exchangeRate.RateCurrency</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="/exchangeRates/@exchangeRate.Id/edit">Edit</a>
+                        <button class="btn btn-danger btn-sm" @onclick="(() => DeleteElement(exchangeRate,exchangeRate.Id))">Delete</button>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<ExchangeRateDto>? exchangeRates;
+
+    protected override void OnInitialized()
+    {
+        exchangeRates = ExchangeRateController.GetExchangeRates(UserSession.LoggedUser.Id);
+    }
+
+    private void DeleteElement(ExchangeRateDto exchangeRateDto,int Id)
+    {
+        ExchangeRateController.DeleteExchangeRate(exchangeRateDto,Id);
+        NavigationManager.NavigateTo("/exchangeRates",true);
+    }    
+}

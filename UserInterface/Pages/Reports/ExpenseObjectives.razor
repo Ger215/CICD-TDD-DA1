@@ -1,0 +1,61 @@
+﻿@page "/reports/expenseObjectivesReport"
+
+@using Models;
+@using UserInterface.Data;
+@using Logic.DTOs
+@using Logic.Interfaces
+
+@inject UserSession UserSession
+@inject IReportGoalByMonth ReportByMonth
+
+
+
+<h1>
+    Expense Objectives Report
+</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Max Amount</th>
+        <th>Amount Spent</th>
+        <th>Objective Achived</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var reportGoal in reportGoalsByMonth)
+        {
+                    <tr>
+                        <td>@reportGoal.SpendingGoalAssociated.Title</td>
+                        <td>@reportGoal.SpendingGoalAssociated.MaximumAmount</td>
+                        <td>@reportGoal.AmountSpent</td>
+
+                        @if (@reportGoal.Achieved)
+                        {
+                           <td>Yes</td>
+                        }else{
+                            <td>No</td>
+                        }
+                    </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="/reports" 
+       class="btn btn-success btn-sm" style="margin-right: 40px; margin-top: 10px;">Go Back
+    </a>
+</div>
+
+@code {
+
+    private User? user;
+    private List<ReportGoalByMonthDto>? reportGoalsByMonth;
+
+    protected override void OnInitialized()
+    {
+        DateTime date = DateTime.Now;
+        reportGoalsByMonth = ReportByMonth.GenerateReportGoalsByMonth(UserSession.LoggedUser.Id, date);
+    }
+}

@@ -1,0 +1,64 @@
+﻿<div class="top-row ps-3 navbar navbar-dark" style="background-color: #4CAF50; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="" style="color: #FFFFFF; font-size: 24px;">FinTrac</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu" style="border: none; background: transparent;">
+            <span class="navbar-toggler-icon" style="color: #FFFFFF;"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu" style="background-color: #4CAF50;">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/index">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/userSettings">
+                <span class="oi oi-cog" aria-hidden="true"></span> User Settings
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/categories"> 
+                <span class="oi oi-tags" aria-hidden="true"></span> Categories
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/accounts">
+                <span class="oi oi-person" aria-hidden="true"></span> Accounts
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/transactions">
+                <span class="oi oi-transfer" aria-hidden="true"></span> Transactions
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/expenseObjectives">
+                <span class="oi oi-task" aria-hidden="true"></span> Expense Objectives
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/exchangeRates">
+                <span class="oi oi-dollar" aria-hidden="true"></span> Exchange Rates
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/reports">
+                <span class="oi oi-file" aria-hidden="true"></span> Reports
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
