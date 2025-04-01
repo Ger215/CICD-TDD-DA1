@@ -101,33 +101,34 @@ jobs:
         if: always()
         run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
 
-  create-pr:
-    name: Create Pull Request
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Git
+      - name: Build Tag
+        if: github.event_name == 'push'
         run: |
+
+          git fetch --tags origin
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git config --global user.name "${{ github.actor }}"
 
-      - name: Create Branch and Commit Report
-        run: |
-          BRANCH_NAME="ci/update-metrics-$(date +'%Y%m%d%H%M%S')"
-          git checkout -b $BRANCH_NAME
+          GIT_TAGS=$(git tag | egrep '^[0-9]+\.[0-9]+(\.[0-9]+)?$' || true)
 
-          git add coverage || true
+          if [ -z "$GIT_TAGS" ]; then
+            LATEST="0.0.0"
+          else
+            LATEST=$(
+              git tag --list |
+              egrep '^[0-9]+\.[0-9]+(\.[0-9]+)?$' |
+              sort -V |
+              tail -n 1
+            )
+          fi
 
-          git commit --allow-empty -m "chore: update coverage report [ci skip]"
-          git push origin $BRANCH_NAME
+           if echo $LATEST | egrep '^[0-9]+\.[0-9]+$'; then
+            BUMPED="${LATEST}.0"
+          else
+            BUMPED=$(echo $LATEST | awk -F. '{ print $1 "." $2 "." ($3 + 1) }')
+          fi
 
-          gh pr create --title "chore: update coverage report" \
-                       --body "This PR was automatically generated to update code coverage metrics." \
-                       --base main --head $BRANCH_NAME
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "bumping ${LATEST} to ${BUMPED}"
+
+          git tag --annotate "$BUMPED" --message "via GitHub Actions"
+          git push origin "$BUMPED"
