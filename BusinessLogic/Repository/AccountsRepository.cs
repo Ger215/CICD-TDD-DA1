@@ -6,6 +6,7 @@ namespace DataAccess.Repository;
 
 public class AccountsRepository
 {
+    //comment
     private ApplicationDbContext _database;
 
     public AccountsRepository(ApplicationDbContext database)
