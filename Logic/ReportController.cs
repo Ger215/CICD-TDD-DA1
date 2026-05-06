@@ -16,8 +16,7 @@ namespace Logic
         public TransactionsRepository _transactionsRepository;
         public ExchangeRatesRepository _exchangeRatesRepository;
         public SpendingGoalsRepository _spendingGoalsRepository;
-
-        //comment
+        
         public ReportController(ApplicationDbContext context)
         {
             _userRepository = new UsersRepository(context);
